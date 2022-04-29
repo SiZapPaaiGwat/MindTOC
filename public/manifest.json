@@ -4,11 +4,13 @@
   "version": "1.0",
   "manifest_version": 3,
   "action": {},
-  "content_scripts": [],
+  "content_scripts": [
+    {
+      "js": ["static/js/content.js"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ],
   "permissions": ["activeTab", "scripting"],
-  "background": {
-    "service_worker": "./static/js/background.js"
-  },
   "icons": {
     "16": "logo192.png",
     "48": "logo192.png",

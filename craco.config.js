@@ -5,21 +5,21 @@ module.exports = {
         ...webpackConfig,
         entry: {
           main: [
-            env === "development" &&
-              require.resolve("react-dev-utils/webpackHotDevClient"),
-            paths.appIndexJs,
+            env === 'development' &&
+              require.resolve('react-dev-utils/webpackHotDevClient'),
+            paths.appIndexJs
           ].filter(Boolean),
-          background: "./src/chromeServices/DOM.ts",
+          content: './src/content.tsx'
         },
         output: {
           ...webpackConfig.output,
-          filename: "static/js/[name].js",
+          filename: 'static/js/[name].js'
         },
         optimization: {
           ...webpackConfig.optimization,
-          runtimeChunk: false,
-        },
-      };
-    },
-  },
-};
+          runtimeChunk: false
+        }
+      }
+    }
+  }
+}
