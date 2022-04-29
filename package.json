@@ -19,8 +19,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "INLINE_RUNTIME_CHUNK=false craco build",
+    "build": "INLINE_RUNTIME_CHUNK=false GENERATE_SOURCEMAP=false craco build",
     "test": "react-scripts test",
+    "tsc": "tsc",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

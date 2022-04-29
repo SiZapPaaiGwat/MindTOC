@@ -1,21 +1,14 @@
 {
-  "name": "Chrome React SEO Extension",
-  "description": "The power of React and TypeScript for building interactive Chrome extensions",
+  "name": "MindTOC",
+  "description": "Editable page outliner with mind maps",
   "version": "1.0",
   "manifest_version": 3,
-  "action": {
-    "default_popup": "index.html",
-    "default_title": "Open the popup"
+  "action": {},
+  "content_scripts": [],
+  "permissions": ["activeTab", "scripting"],
+  "background": {
+    "service_worker": "./static/js/background.js"
   },
-  "content_scripts": [
-    {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["./static/js/content.js"]
-    }
-  ],
-  "permissions": [
-    "activeTab"
-  ],
   "icons": {
     "16": "logo192.png",
     "48": "logo192.png",
