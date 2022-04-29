@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { CONTAINER_ID } from './types/constants'
 
 function Widget(): ReactElement {
-  return <div>Hello world!</div>
+  return <div className="w-12">Hello world!</div>
 }
 
 function render() {
