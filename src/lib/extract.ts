@@ -1,18 +1,26 @@
 import { SEMANTIC_HEADINGS } from '../types/constants'
-import { type Heading } from '../types'
+import { type Heading, type NodeItem } from '../types'
 
-export function extract(root: HTMLElement) {
+export function extract(root: NodeItem) {
   let id = 0
   const headings: Heading[] = []
-  const treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, {
-    acceptNode: function (node: HTMLElement) {
-      if (SEMANTIC_HEADINGS.includes(node.tagName.toLowerCase())) {
-        return NodeFilter.FILTER_ACCEPT
-      } else {
-        return NodeFilter.FILTER_SKIP
+  if (!root) {
+    return headings
+  }
+
+  const treeWalker = document.createTreeWalker(
+    root as Node,
+    NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode: function (node: HTMLElement) {
+        if (SEMANTIC_HEADINGS.includes(node.tagName.toLowerCase())) {
+          return NodeFilter.FILTER_ACCEPT
+        } else {
+          return NodeFilter.FILTER_SKIP
+        }
       }
     }
-  })
+  )
 
   while (treeWalker.nextNode()) {
     const currentNode = treeWalker.currentNode as HTMLElement

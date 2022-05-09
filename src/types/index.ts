@@ -5,3 +5,8 @@ export type Heading = {
 }
 
 export type NodeItem = HTMLElement | null
+
+export type Offset = {
+  top: number
+  left: number
+}
