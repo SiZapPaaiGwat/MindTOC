@@ -1,13 +1,32 @@
 import React, { ReactElement } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { CONTAINER_ID } from './types/constants'
+import { CONTAINER_ID, SEMANTIC_HEADINGS } from './types/constants'
+import { searchContentRoot } from './lib/search'
+import { extract } from './lib/extract'
+import { type Heading } from './types'
+import './styles/index.css'
 
-function Widget(): ReactElement {
-  return <div className="w-12">Hello world!</div>
+function Widget({ headings }: { headings: Heading[] }): ReactElement {
+  return (
+    <div className="fixed top-0 left-0 w-40">
+      {headings.map((heading) => (
+        <div key={heading.id}>{heading.node.textContent}</div>
+      ))}
+    </div>
+  )
 }
 
 function render() {
+  let headings: Heading[] = []
+  const rootNode = searchContentRoot(
+    document.querySelector(SEMANTIC_HEADINGS.join(','))
+  )
+  if (rootNode) {
+    headings = extract(rootNode)
+    console.log(headings)
+  }
+
   let div = document.querySelector(`#${CONTAINER_ID}`)
   if (!div) {
     div = document.createElement('div')
@@ -15,7 +34,7 @@ function render() {
     document.body.appendChild(div)
   }
   const root = createRoot(div)
-  root.render(<Widget />)
+  root.render(<Widget headings={headings} />)
 }
 
 render()
