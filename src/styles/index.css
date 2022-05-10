@@ -1,3 +1,45 @@
 /* @tailwind base; */
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .content_wrapper {
+    @apply fixed w-[420px] z-[99999] border border-solid border-gray-300 bg-white;
+  }
+  .content_title {
+    @apply font-semibold text-center cursor-move text-base;
+  }
+  .content_list {
+    @apply overflow-x-hidden overflow-y-auto px-4 py-2 min-h-fit max-h-[60vh];
+  }
+  .content_list_item {
+    @apply text-xs border-l-4 border-t-0 border-b-0 border-r-0 border-solid border-white;
+  }
+  .content_list_item[data-selected='true'] {
+    @apply border-gray-500;
+  }
+  .content_list_item a {
+    @apply text-gray-500 hover:text-gray-600;
+  }
+  .content_list_item[data-selected='true'] a {
+    @apply text-gray-700;
+  }
+  .content_list_item[data-tag='h1'] {
+    @apply hidden;
+  }
+  .content_list_item[data-tag='h2'] {
+    @apply pl-4;
+  }
+  .content_list_item[data-tag='h3'] {
+    @apply pl-8;
+  }
+  .content_list_item[data-tag='h4'] {
+    @apply pl-12;
+  }
+  .content_list_item[data-tag='h5'] {
+    @apply pl-16;
+  }
+  .content_list_item[data-tag='h6'] {
+    @apply pl-20;
+  }
+}

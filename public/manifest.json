@@ -7,7 +7,7 @@
   "content_scripts": [
     {
       "js": ["static/js/content.js"],
-      "css": ["static/css/content.eb2d7df2.css"],
+      "css": ["static/css/content.css"],
       "matches": ["http://*/*", "https://*/*"]
     }
   ],

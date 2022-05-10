@@ -1,20 +1,25 @@
-import { SEMANTIC_HEADINGS } from '../types/constants'
-import { type Heading, type NodeItem } from '../types'
+import { SEMANTIC_HEADINGS, IGNORED_TAGS } from '../types/constants'
+import { type Heading } from '../types'
+import { isContentNode } from '../utils/content'
 
-export function extract(root: NodeItem) {
+export function extract(root: HTMLElement) {
   let id = 0
   const headings: Heading[] = []
-  if (!root) {
-    return headings
-  }
-
   const treeWalker = document.createTreeWalker(
     root as Node,
     NodeFilter.SHOW_ELEMENT,
     {
       acceptNode: function (node: HTMLElement) {
-        if (SEMANTIC_HEADINGS.includes(node.tagName.toLowerCase())) {
-          return NodeFilter.FILTER_ACCEPT
+        const tag = node.tagName.toLowerCase()
+        if (IGNORED_TAGS.includes(tag)) {
+          return NodeFilter.FILTER_REJECT
+        } else if (SEMANTIC_HEADINGS.includes(tag)) {
+          /**
+           * NOTE some pages may wrapper with a redundant tag
+           */
+          return isContentNode(node.parentElement)
+            ? NodeFilter.FILTER_ACCEPT
+            : NodeFilter.FILTER_REJECT
         } else {
           return NodeFilter.FILTER_SKIP
         }

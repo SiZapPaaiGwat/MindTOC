@@ -1,10 +1,11 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useCallback, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { CONTAINER_ID, SEMANTIC_HEADINGS } from './types/constants'
 import { searchContentRoot } from './lib/search'
 import { extract } from './lib/extract'
-import { type Heading, type Offset, type NodeItem } from './types'
+import getInitialPosition from './utils/offset'
+import { type Heading } from './types'
 import './styles/index.css'
 
 function Widget({
@@ -16,17 +17,29 @@ function Widget({
   top: number
   left: number
 }): ReactElement {
+  const [selected, setSelected] = useState<number>(-1)
+  const onItemClick = useCallback((e: React.SyntheticEvent<HTMLElement>) => {
+    setSelected(parseFloat(e.currentTarget?.dataset.id as string))
+  }, [])
+
   return (
     <div
-      className="fixed w-[375px] z-[99999] border border-solid border-gray-400 bottom-4 "
+      className="content_wrapper"
       style={{ top: top + 'px', left: left + 'px' }}
     >
-      <div className="absolute top-0 left-0 right-0 text-blue-500 text-center cursor-move font-bold text-xl">
-        Toolbar
-      </div>
-      <div className="absolute top-8 bottom-0 left-0 right-0 overflow-x-hidden overflow-y-auto px-4 py-2">
+      <div className="content_title">Table of Contents</div>
+      <div className="content_list">
         {headings.map((heading) => (
-          <div key={heading.id}>{heading.node.textContent}</div>
+          <div
+            key={heading.id}
+            data-tag={heading.node.tagName.toLowerCase()}
+            data-id={heading.id}
+            data-selected={selected === heading.id}
+            className="content_list_item"
+            onClick={onItemClick}
+          >
+            <a href={`#${heading.anchor}`}>{heading.node.textContent}</a>
+          </div>
         ))}
       </div>
     </div>
@@ -42,22 +55,16 @@ if (!div) {
 const root = createRoot(div)
 
 function render() {
-  let headings: Heading[] = []
-  const offset: Offset = {
-    top: 0,
-    left: 0
-  }
   const heading = document.querySelector(SEMANTIC_HEADINGS.join(','))
-  const rootNode = searchContentRoot(heading as NodeItem)
-  if (heading && rootNode) {
-    headings = extract(rootNode)
-    const { left, width } = rootNode.getBoundingClientRect()
-    // url hash will automatically scroll to target element
-    offset.top = heading.getBoundingClientRect().top + window.scrollY
-    offset.left = left + width + 16
+  if (heading) {
+    const rootNode = searchContentRoot(heading as HTMLElement)
+    const titleNode = document.querySelector('h1') || heading
+    const offset = getInitialPosition(rootNode, titleNode as HTMLElement)
+    const headings = extract(rootNode)
+    if (headings.length) {
+      root.render(<Widget headings={headings} {...offset} />)
+    }
   }
-
-  root.render(<Widget headings={headings} {...offset} />)
 }
 
 render()
