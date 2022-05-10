@@ -1,5 +1,8 @@
 function textLength(node: HTMLElement): number {
-  return node.innerText.replace(/\s/g, '').length
+  // innerText is not supported in jsdom
+  // But there are some differences between textContent and innerText
+  // https://github.com/jsdom/jsdom/issues/1245
+  return node.textContent.replace(/\s/g, '').length
 }
 
 /**
