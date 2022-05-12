@@ -52,15 +52,23 @@ export function extract(root: HTMLElement) {
       indentLevel: tagNum,
       anchor
     }
-    // If a h4 comes after h2, its level is 3
-    if (tagNum - prevTagNum > 1) {
-      node.indentLevel = prevTagNum + 1
+    /**
+     * In this case, adjust level by prev level
+     * h2 > h5 + h5
+     */
+    if (prevTagNum) {
+      if (tagNum === prevTagNum) {
+        node.indentLevel = headings[id - 1].indentLevel
+      } else if (tagNum - prevTagNum > 1) {
+        node.indentLevel = headings[id - 1].indentLevel + 1
+      }
     }
+
     headings.push(node)
-    id += 1
 
     prevNode = currentNode
     minLevel = Math.min(minLevel, node.indentLevel)
+    id += 1
   }
 
   const step = minLevel - 1
@@ -70,5 +78,10 @@ export function extract(root: HTMLElement) {
     })
   }
 
+  /**
+   * TODO santize heading text
+   * Some website like wikipedia, heading text contains functional links, it should be removed
+   * We can sanitize them by comparing with its toc texts
+   */
   return headings
 }
