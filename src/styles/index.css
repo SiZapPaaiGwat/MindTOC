@@ -24,22 +24,22 @@
   .content_list_item[data-selected='true'] a {
     @apply text-gray-700;
   }
-  .content_list_item[data-tag='h1'] {
-    @apply hidden;
-  }
-  .content_list_item[data-tag='h2'] {
+  .content_list_item[data-level='1'] {
     @apply pl-4;
   }
-  .content_list_item[data-tag='h3'] {
+  .content_list_item[data-level='2'] {
     @apply pl-8;
   }
-  .content_list_item[data-tag='h4'] {
+  .content_list_item[data-level='3'] {
     @apply pl-12;
   }
-  .content_list_item[data-tag='h5'] {
+  .content_list_item[data-level='4'] {
     @apply pl-16;
   }
-  .content_list_item[data-tag='h6'] {
+  .content_list_item[data-level='5'] {
     @apply pl-20;
+  }
+  .content_list_item[data-level='6'] {
+    @apply pl-24;
   }
 }

@@ -1,8 +1,8 @@
-function textLength(node: HTMLElement): number {
+export function textLength(node: HTMLElement): number {
   // innerText is not supported in jsdom
   // But there are some differences between textContent and innerText
   // https://github.com/jsdom/jsdom/issues/1245
-  return node.textContent.replace(/\s/g, '').length
+  return node.textContent?.replace(/\s/g, '').length || 0
 }
 
 /**
@@ -11,8 +11,8 @@ function textLength(node: HTMLElement): number {
  * @returns
  */
 export function textDensity(element: HTMLElement): number {
-  const tagLength = element?.querySelectorAll('*')?.length || 1
-  return textLength(element) / tagLength
+  const tagLength = element.querySelectorAll('*')?.length || 0
+  return textLength(element) / (tagLength + 1)
 }
 
 /**
@@ -33,6 +33,20 @@ export function linkDensity(element: HTMLElement): number {
       linkLength -= 1
     }
   }
-  const tagLength = element.querySelectorAll('*')?.length || 1
-  return linkLength / tagLength
+  const tagLength = element.querySelectorAll('*')?.length || 0
+  return linkLength / (tagLength + 1)
+}
+
+export function linkTextRatio(element: HTMLElement): number {
+  const links = element.querySelectorAll('a')
+  if (!links) {
+    return 0
+  }
+
+  let textSize = 0
+  for (let i = 0; i < links.length; i++) {
+    textSize += textLength(links[i])
+  }
+
+  return textSize / textLength(element)
 }

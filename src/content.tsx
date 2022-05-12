@@ -2,7 +2,7 @@ import React, { ReactElement, useCallback, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { CONTAINER_ID, SEMANTIC_HEADINGS } from './types/constants'
-import { searchContentRoot } from './lib/search'
+import searchContentRoot from './lib/search'
 import { extract } from './lib/extract'
 import getInitialPosition from './utils/offset'
 import { type Heading } from './types'
@@ -32,7 +32,7 @@ function Widget({
         {headings.map((heading) => (
           <div
             key={heading.id}
-            data-tag={heading.node.tagName.toLowerCase()}
+            data-level={heading.indentLevel}
             data-id={heading.id}
             data-selected={selected === heading.id}
             className="content_list_item"
@@ -55,12 +55,13 @@ if (!div) {
 const root = createRoot(div)
 
 function render() {
-  const heading = document.querySelector(SEMANTIC_HEADINGS.join(','))
-  if (heading) {
-    const rootNode = searchContentRoot(heading as HTMLElement)
-    const titleNode = document.querySelector('h1') || heading
-    const offset = getInitialPosition(rootNode, titleNode as HTMLElement)
+  const rootNode = searchContentRoot(document)
+  const titleNode = document.querySelector(SEMANTIC_HEADINGS.join(','))
+  console.log({ rootNode })
+  if (rootNode) {
+    const offset = getInitialPosition(rootNode, titleNode)
     const headings = extract(rootNode)
+    console.log({ headings })
     if (headings.length) {
       root.render(<Widget headings={headings} {...offset} />)
     }
