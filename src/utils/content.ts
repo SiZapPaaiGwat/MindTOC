@@ -1,9 +1,11 @@
 import {
   TEXT_DENSITZY_THRESHOLD,
   IGNORED_TAGS,
-  TOC_NODE_TEXT_DENSITY_THRESHOLD
+  TOC_NODE_TEXT_DENSITY_THRESHOLD,
+  LONG_ARTICLE_THERESHOLD,
+  LINK_TEXT_THERESHOLD
 } from '../types/constants'
-import { textDensity, textLength } from '../lib/density'
+import { textDensity, textLength, linkTextRatio } from '../lib/density'
 
 /**
  * A content node contains a lot of text and its tag should be semantic
@@ -18,7 +20,15 @@ export function isContentNode(root: HTMLElement): boolean {
   }
 
   const td = textDensity(root)
-  return td > TEXT_DENSITZY_THRESHOLD
+  const tl = textLength(root)
+  const ratio = linkTextRatio(root)
+  if (ratio > LINK_TEXT_THERESHOLD) {
+    return false
+  }
+
+  return tl > LONG_ARTICLE_THERESHOLD
+    ? td > TEXT_DENSITZY_THRESHOLD.LONG_TEXT
+    : td > TEXT_DENSITZY_THRESHOLD.SHORT_TEXT
 }
 
 export function isInternalAnchor(anchor: HTMLAnchorElement): boolean {
