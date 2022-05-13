@@ -6,7 +6,10 @@ export default function offset(
   const top = Math.min(
     200,
     // url hash will automatically scroll to target element
-    heading ? heading.getBoundingClientRect().top + window.scrollY : 0
+    Math.max(
+      heading ? heading.getBoundingClientRect().top + window.scrollY : 0,
+      200
+    )
   )
   const left = Math.min(right + 16, document.documentElement.offsetWidth - 500)
   return {
