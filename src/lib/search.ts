@@ -1,5 +1,19 @@
 import { SEMANTIC_HEADINGS, IGNORED_TAGS } from '../types/constants'
 import { textDensity } from './density'
+import { isContentNode } from '../utils/content'
+
+function getAncestors(el: HTMLElement): HTMLElement[] {
+  let nextParent = el.parentElement
+  const body = el.ownerDocument.body
+  const ancestors: HTMLElement[] = []
+
+  while (nextParent && nextParent !== body) {
+    ancestors.push(nextParent as HTMLElement)
+    nextParent = nextParent.parentElement
+  }
+
+  return ancestors
+}
 
 export function getMaxDensityElement(
   elements: NodeList | HTMLElement[] | HTMLCollection | null
@@ -36,7 +50,8 @@ export function getMaxDensityElement(
  * @returns
  */
 export function searchArticleDirectly(doc: Document): HTMLElement | null {
-  return getMaxDensityElement(doc.querySelectorAll('article'))
+  const article = getMaxDensityElement(doc.querySelectorAll('article'))
+  return article && isContentNode(article) ? article : null
 }
 
 /**
@@ -50,15 +65,24 @@ export function searchArticleByHeading(doc: Document): HTMLElement | null {
     return null
   }
 
-  let nextParent = heading.parentElement
-  const ancestors = []
+  const article = getMaxDensityElement(getAncestors(heading as HTMLElement))
+  return article && isContentNode(article) ? article : null
+}
 
-  while (nextParent && nextParent !== doc.body) {
-    ancestors.push(nextParent)
-    nextParent = nextParent.parentElement
+/**
+ * Search an article from the paragraph tag which has max density.
+ * @param doc Document to search
+ * @returns
+ */
+export function searchArticleByParagraph(doc: Document): HTMLElement | null {
+  const paragraphs = doc.querySelectorAll('p')
+  const paragraph = getMaxDensityElement(paragraphs)
+  if (!paragraph) {
+    return null
   }
 
-  return getMaxDensityElement(ancestors)
+  const article = getMaxDensityElement(getAncestors(paragraph))
+  return article && isContentNode(article) ? article : null
 }
 
 /**
@@ -67,5 +91,9 @@ export function searchArticleByHeading(doc: Document): HTMLElement | null {
  * @returns
  */
 export default function searchContentRoot(doc: Document): HTMLElement | null {
-  return searchArticleDirectly(doc) || searchArticleByHeading(doc)
+  return (
+    searchArticleDirectly(doc) ||
+    searchArticleByHeading(doc) ||
+    searchArticleByParagraph(doc)
+  )
 }
