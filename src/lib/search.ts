@@ -4,7 +4,7 @@ import {
   SEMANTIC_ARTICLE_SELECTORS
 } from '../types/constants'
 import { textDensity } from './density'
-import { isContentNode } from '../utils/content'
+import { isArticleNode } from '../utils/content'
 
 function getAncestors(el: HTMLElement): HTMLElement[] {
   let nextParent = el.parentElement
@@ -71,7 +71,7 @@ export function searchArticleByHeading(doc: Document): HTMLElement | null {
   }
 
   const article = getMaxDensityElement(getAncestors(heading as HTMLElement))
-  return article && isContentNode(article) ? article : null
+  return article && isArticleNode(article) ? article : null
 }
 
 /**
@@ -87,7 +87,7 @@ export function searchArticleByParagraph(doc: Document): HTMLElement | null {
   }
 
   const article = getMaxDensityElement(getAncestors(paragraph))
-  return article && isContentNode(article) ? article : null
+  return article && isArticleNode(article) ? article : null
 }
 
 /**
@@ -102,7 +102,7 @@ export default function searchContentRoot(doc: Document): HTMLElement | null {
     /**
      * Discard disqualified article
      */
-    return isContentNode(article) ? article : null
+    return isArticleNode(article) ? article : null
   } else {
     return searchArticleByHeading(doc) || searchArticleByParagraph(doc)
   }

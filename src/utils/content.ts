@@ -15,7 +15,7 @@ import { SEMANTIC_HEADINGS } from '../types/constants'
  * @param {HTMLElement} root
  * @returns
  */
-export function isContentNode(root: HTMLElement): boolean {
+export function isArticleNode(root: HTMLElement): boolean {
   const tag = root.tagName.toLowerCase()
   if (IGNORED_TAGS.includes(tag)) {
     return false
