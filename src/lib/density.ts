@@ -1,8 +1,9 @@
 export function textLength(node: HTMLElement): number {
-  // innerText is not supported in jsdom
+  // innerText is not supported in jsdom but it is preferable to use
   // But there are some differences between textContent and innerText
   // https://github.com/jsdom/jsdom/issues/1245
-  return node.textContent?.replace(/\s/g, '').length || 0
+  const text = node.innerText || node.textContent
+  return text?.replace(/\s/g, '').length || 0
 }
 
 /**
