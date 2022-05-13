@@ -1,4 +1,4 @@
-import { linkDensity, textDensity, linkTextRatio } from './density'
+import { linkDensity, textDensity, getTextRatioByTags } from './density'
 
 test('compute text density', () => {
   const text = 'Hello world!'
@@ -34,5 +34,5 @@ test('compute text density for links in an element', () => {
   const text = 'Hello world!'
   const element = document.createElement('div')
   element.innerHTML = `<a>${text}</a>${text}`
-  expect(linkTextRatio(element)).toBe(0.5)
+  expect(getTextRatioByTags(element, 'a')).toBe(0.5)
 })

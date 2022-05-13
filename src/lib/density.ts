@@ -38,15 +38,18 @@ export function linkDensity(element: HTMLElement): number {
   return linkLength / (tagLength + 1)
 }
 
-export function linkTextRatio(element: HTMLElement): number {
-  const links = element.querySelectorAll('a')
-  if (!links) {
+export function getTextRatioByTags(
+  element: HTMLElement,
+  selectors: string
+): number {
+  const descendants = element.querySelectorAll(selectors)
+  if (!descendants) {
     return 0
   }
 
   let textSize = 0
-  for (let i = 0; i < links.length; i++) {
-    textSize += textLength(links[i])
+  for (let i = 0; i < descendants.length; i++) {
+    textSize += textLength(descendants[i] as HTMLElement)
   }
 
   return textSize / textLength(element)
