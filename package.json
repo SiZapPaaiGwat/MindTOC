@@ -50,7 +50,7 @@
     "build": "INLINE_RUNTIME_CHUNK=false GENERATE_SOURCEMAP=false craco build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage",
     "tsc": "tsc"
   },
   "version": "0.1.0"

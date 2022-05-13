@@ -99,7 +99,7 @@ function Widget(): ReactElement {
             className="content_list_item"
             onClick={onItemClick}
           >
-            <a href={`#${heading.anchor}`}>{heading.node.textContent}</a>
+            <a href={`#${heading.anchor}`}>{heading.text}</a>
           </div>
         ))}
       </div>

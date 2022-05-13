@@ -51,7 +51,8 @@ export function extract(root: HTMLElement) {
 
     const node = {
       id,
-      node: currentNode,
+      // Remove head and tail hash from anchor
+      text: currentNode.innerText.replace(/(^\s?#)|(#\s?$)/, ''),
       indentLevel: tagNum,
       anchor
     }
