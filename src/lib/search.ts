@@ -1,10 +1,14 @@
-import { SEMANTIC_HEADINGS, IGNORED_TAGS } from '../types/constants'
+import {
+  SEMANTIC_HEADINGS,
+  IGNORED_TAGS,
+  SEMANTIC_ARTICLE_SELECTORS
+} from '../types/constants'
 import { textDensity } from './density'
 import { isContentNode } from '../utils/content'
 
 function getAncestors(el: HTMLElement): HTMLElement[] {
   let nextParent = el.parentElement
-  const body = el.ownerDocument.body
+  const body = el.ownerDocument.documentElement
   const ancestors: HTMLElement[] = []
 
   while (nextParent && nextParent !== body) {
@@ -50,8 +54,9 @@ export function getMaxDensityElement(
  * @returns
  */
 export function searchArticleDirectly(doc: Document): HTMLElement | null {
-  const article = getMaxDensityElement(doc.querySelectorAll('article'))
-  return article && isContentNode(article) ? article : null
+  return getMaxDensityElement(
+    doc.querySelectorAll(SEMANTIC_ARTICLE_SELECTORS.join(','))
+  )
 }
 
 /**
@@ -91,9 +96,14 @@ export function searchArticleByParagraph(doc: Document): HTMLElement | null {
  * @returns
  */
 export default function searchContentRoot(doc: Document): HTMLElement | null {
-  return (
-    searchArticleDirectly(doc) ||
-    searchArticleByHeading(doc) ||
-    searchArticleByParagraph(doc)
-  )
+  const article = searchArticleDirectly(doc)
+  console.log({ article })
+  if (article) {
+    /**
+     * Discard disqualified article
+     */
+    return isContentNode(article) ? article : null
+  } else {
+    return searchArticleByHeading(doc) || searchArticleByParagraph(doc)
+  }
 }

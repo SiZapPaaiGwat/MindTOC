@@ -4,6 +4,10 @@ export const CONTAINER_ID = 'mind_toc_container'
 
 export const SEMANTIC_HEADINGS = 'h1,h2,h3,h4,h5,h6'.split(',')
 
+export const SEMANTIC_ARTICLE_SELECTORS = 'article,main,[role="main"]'.split(
+  ','
+)
+
 // Reject these tags when extrating headings
 export const IGNORED_TAGS =
   'header,footer,nav,aside,ul,ol,table,menu,dl,menu,pre,code,script,svg,style,datalist,select,template,noscript,form,button,iframe'.split(
@@ -27,6 +31,8 @@ export const LINK_DENSITY_THRESHOLD = 0.5
 
 // If text size of a node's child links occupies of this proportion, it is not a part of an article.
 export const LINK_TEXT_THERESHOLD = 0.3
+
+export const HEADING_TEXT_THERESHOLD = 0.5
 
 // Most text contents of a toc node are from internal anchors
 export const TOC_NODE_TEXT_DENSITY_THRESHOLD = 0.5
