@@ -8,7 +8,6 @@ import React, {
 import { createRoot } from 'react-dom/client'
 import { useLocation } from 'react-use'
 
-import { Style } from './style'
 import { CONTAINER_ID, SEMANTIC_HEADINGS } from './types/constants'
 import searchContentRoot from './lib/search'
 import { extract } from './lib/extract'
@@ -88,7 +87,6 @@ function Widget(): ReactElement {
       className={`content_wrapper ${visible ? '' : 'hidden'}`}
       style={{ top: top + 'px', left: left + 'px' }}
     >
-      <Style />
       <div className="content_title">Table of Contents</div>
       <div className="content_list">
         {headings.map((heading) => (
