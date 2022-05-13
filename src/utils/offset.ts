@@ -11,7 +11,8 @@ export default function offset(
       200
     )
   )
-  const left = Math.min(right + 16, document.documentElement.offsetWidth - 500)
+  // Avoid positioning too left
+  const left = Math.max(right + 16, document.documentElement.offsetWidth * 0.5)
   return {
     top,
     left
