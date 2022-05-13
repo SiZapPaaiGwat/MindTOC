@@ -25,7 +25,10 @@ export function extract(root: HTMLElement) {
         }
 
         if (SEMANTIC_HEADINGS.includes(tag)) {
-          return NodeFilter.FILTER_ACCEPT
+          const { width, height } = node.getBoundingClientRect()
+          return width > 0 && height > 0
+            ? NodeFilter.FILTER_ACCEPT
+            : NodeFilter.FILTER_REJECT
         }
 
         return NodeFilter.FILTER_SKIP
