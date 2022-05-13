@@ -2,27 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Note
+ prefer color shceme is not supported in content.css
+ since tailwind depends on this, we should inject theme related style dynamicly
+ write theme related style here and copy the transformed code to style.tsx
+*/
 @layer components {
   .content_wrapper {
-    @apply fixed w-[420px] z-[99999] border border-solid border-gray-300 bg-white;
+    @apply fixed w-[420px] z-[99999] leading-relaxed border border-solid border-gray-300 bg-white dark:bg-slate-900;
   }
   .content_title {
-    @apply font-semibold text-center cursor-move text-base;
+    @apply font-semibold text-center cursor-move text-base text-slate-800 dark:text-slate-200;
   }
   .content_list {
     @apply overflow-x-hidden overflow-y-auto px-4 py-2 min-h-fit max-h-[60vh];
   }
   .content_list_item {
-    @apply text-xs border-l-4 border-t-0 border-b-0 border-r-0 border-solid border-white;
+    @apply text-xs border-l-4 border-t-0 border-b-0 border-r-0 border-solid border-white dark:bg-slate-900;
   }
   .content_list_item[data-selected='true'] {
-    @apply border-gray-500;
+    @apply border-gray-500 dark:border-slate-200;
   }
   .content_list_item a {
-    @apply text-gray-500 hover:text-gray-600;
+    @apply no-underline text-gray-500 hover:text-gray-600 dark:text-slate-200 dark:hover:text-slate-50;
   }
   .content_list_item[data-selected='true'] a {
-    @apply text-gray-700;
+    @apply text-gray-700 dark:text-slate-50;
   }
   .content_list_item[data-level='1'] {
     @apply pl-4;
