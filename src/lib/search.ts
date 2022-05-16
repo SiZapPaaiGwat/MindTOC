@@ -66,8 +66,12 @@ export function searchArticleDirectly(doc: Document): HTMLElement | null {
  */
 export function searchArticleByHeading(
   doc: Document,
-  heading: HTMLElement
+  heading: HTMLElement | null
 ): HTMLElement | null {
+  if (!heading) {
+    return null
+  }
+
   const article = getMaxDensityElement(getAncestors(heading))
   return article && isArticleNode(article) ? article : null
 }

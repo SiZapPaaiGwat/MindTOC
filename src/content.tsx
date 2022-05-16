@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useLocation } from 'react-use'
+import Color from 'color'
 
 import { CONTAINER_ID, SEMANTIC_HEADINGS } from './types/constants'
 import searchContentRoot from './lib/search'
@@ -16,14 +17,22 @@ import reducer, { defaultState, Actions } from './reducer'
 
 import './styles/index.css'
 
-let div = document.querySelector(`#${CONTAINER_ID}`)
-if (!div) {
-  div = document.createElement('div')
-  div.setAttribute('id', CONTAINER_ID)
-  document.body.appendChild(div)
+let host = document.querySelector(`#${CONTAINER_ID}`)
+if (!host) {
+  host = document.createElement('div')
+  host.setAttribute('id', CONTAINER_ID)
+  document.body.appendChild(host)
 }
-const root = createRoot(div)
+const root = createRoot(host)
 root.render(<Widget />)
+
+/**
+ * matchMedia('(prefers-color-scheme: dark)').matches does not work in content.js
+ */
+const isDark = Color(getComputedStyle(document.body).backgroundColor).isDark()
+if (isDark) {
+  document.documentElement.classList.add('dark')
+}
 
 function Widget(): ReactElement {
   // const [hash] = useHash()
