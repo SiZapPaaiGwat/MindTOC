@@ -50,10 +50,11 @@
   "private": true,
   "scripts": {
     "build": "INLINE_RUNTIME_CHUNK=false GENERATE_SOURCEMAP=false craco build",
+    "clean": "cd build && mv static/css/content.*.css static/css/content.css && rm -rf asset-manifest.json *.html static/js/*.txt",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test --coverage",
     "tsc": "tsc"
   },
-  "version": "0.1.0"
+  "version": "1.0.0"
 }

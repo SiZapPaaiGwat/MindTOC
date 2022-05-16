@@ -2,6 +2,7 @@ import { SEMANTIC_HEADINGS, IGNORED_TAGS } from '../types/constants'
 import { type Heading } from '../types'
 
 const ignoreHiddenHeadingTags = false
+const headingTagMinimum = 2
 
 function getTagNumber(tag: string): number {
   return parseInt(tag.toLowerCase().replace('h', ''))
@@ -12,7 +13,7 @@ function getTagNumber(tag: string): number {
  * @param root Root element to extract heading tags
  * @returns
  */
-export function extract(root: HTMLElement) {
+export function extract(root: HTMLElement): Heading[] {
   let id = 0
   const headings: Heading[] = []
   const treeWalker = document.createTreeWalker(
@@ -58,7 +59,7 @@ export function extract(root: HTMLElement) {
     const node = {
       id,
       /**
-       * TODO santize heading text
+       * TODO sanitize heading text
        * Some website like wikipedia, heading text contains functional links, it should be removed
        * We can sanitize them by comparing with its toc texts
        */
@@ -90,6 +91,10 @@ export function extract(root: HTMLElement) {
     headings.forEach((heading) => {
       heading.indentLevel -= step
     })
+  }
+
+  if (headings.length < headingTagMinimum) {
+    return []
   }
 
   return headings
