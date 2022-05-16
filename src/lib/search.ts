@@ -64,13 +64,11 @@ export function searchArticleDirectly(doc: Document): HTMLElement | null {
  * @param doc Document to search
  * @returns
  */
-export function searchArticleByHeading(doc: Document): HTMLElement | null {
-  const heading = doc.querySelector(SEMANTIC_HEADINGS.join(','))
-  if (!heading) {
-    return null
-  }
-
-  const article = getMaxDensityElement(getAncestors(heading as HTMLElement))
+export function searchArticleByHeading(
+  doc: Document,
+  heading: HTMLElement
+): HTMLElement | null {
+  const article = getMaxDensityElement(getAncestors(heading))
   return article && isArticleNode(article) ? article : null
 }
 
@@ -104,6 +102,17 @@ export default function searchContentRoot(doc: Document): HTMLElement | null {
      */
     return isArticleNode(article) ? article : null
   } else {
-    return searchArticleByHeading(doc) || searchArticleByParagraph(doc)
+    /**
+     * No need to extract if not heading tag found
+     */
+    const heading = doc.querySelector(SEMANTIC_HEADINGS.join(','))
+    if (!heading) {
+      return null
+    }
+
+    return (
+      searchArticleByHeading(doc, heading as HTMLElement) ||
+      searchArticleByParagraph(doc)
+    )
   }
 }

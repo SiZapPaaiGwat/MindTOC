@@ -1,5 +1,5 @@
 export type Heading = {
-  node: HTMLElement
+  text: string
   id: number
   anchor: string
   indentLevel: number

@@ -1,3 +1,4 @@
+import { SEMANTIC_HEADINGS } from '../types/constants'
 import searchContentRoot, {
   searchArticleByHeading,
   searchArticleByParagraph
@@ -58,7 +59,10 @@ test('Search article node from direct tag', async () => {
 
 test('Search article node from heading tags', async () => {
   document.body.innerHTML = htmlWithHeadingTags
-  const article = searchArticleByHeading(document)
+  const article = searchArticleByHeading(
+    document,
+    document.querySelector(SEMANTIC_HEADINGS.join(','))
+  )
   // no parent found
   expect(article?.getAttribute('id')).toBe(null)
 })
