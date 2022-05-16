@@ -1,6 +1,8 @@
 import { SEMANTIC_HEADINGS, IGNORED_TAGS } from '../types/constants'
 import { type Heading } from '../types'
 
+const ignoreHiddenHeadingTags = false
+
 function getTagNumber(tag: string): number {
   return parseInt(tag.toLowerCase().replace('h', ''))
 }
@@ -25,10 +27,14 @@ export function extract(root: HTMLElement) {
         }
 
         if (SEMANTIC_HEADINGS.includes(tag)) {
-          const { width, height } = node.getBoundingClientRect()
-          return width > 0 && height > 0
-            ? NodeFilter.FILTER_ACCEPT
-            : NodeFilter.FILTER_REJECT
+          if (ignoreHiddenHeadingTags) {
+            const { width, height } = node.getBoundingClientRect()
+            return width > 0 && height > 0
+              ? NodeFilter.FILTER_ACCEPT
+              : NodeFilter.FILTER_REJECT
+          } else {
+            return NodeFilter.FILTER_ACCEPT
+          }
         }
 
         return NodeFilter.FILTER_SKIP
@@ -51,7 +57,11 @@ export function extract(root: HTMLElement) {
 
     const node = {
       id,
-      // Remove head and tail hash from anchor
+      /**
+       * TODO santize heading text
+       * Some website like wikipedia, heading text contains functional links, it should be removed
+       * We can sanitize them by comparing with its toc texts
+       */
       text: currentNode.innerText.replace(/(^\s?#)|(#\s?$)/, ''),
       indentLevel: tagNum,
       anchor
@@ -82,10 +92,5 @@ export function extract(root: HTMLElement) {
     })
   }
 
-  /**
-   * TODO santize heading text
-   * Some website like wikipedia, heading text contains functional links, it should be removed
-   * We can sanitize them by comparing with its toc texts
-   */
   return headings
 }
