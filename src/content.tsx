@@ -26,21 +26,8 @@ if (!host) {
 const root = createRoot(host)
 root.render(<Widget />)
 
-const observer = new MutationObserver((mutationList, instance) => {
-  for (let index = 0; index < mutationList.length; index++) {
-    const element = mutationList[index]
-    console.log(element)
-    if (element.type === 'childList') {
-      instance.disconnect()
-      root.render(<Widget />)
-      return
-    }
-  }
-})
-
 function Widget(): ReactElement {
   const [hash] = useHash()
-  // const { pathname, hash } = useLocation()
   const selectedRef = useRef<HTMLDivElement | null>(null)
   const [state, dispatch] = useReducer(reducer, defaultState)
   const { headings, top, left, selectedIndex, visible } = state
@@ -71,7 +58,7 @@ function Widget(): ReactElement {
         if (!isDark) {
           document.documentElement.classList.add('dark')
         }
-        observer.observe(rootNode, { childList: true })
+
         dispatch({
           type: Actions.INIT,
           payload: {
@@ -93,7 +80,18 @@ function Widget(): ReactElement {
    * When location changed by pushState or replaceState, we need to re-render
    */
   useEffect(() => {
+    function renderAndSendReseponse(
+      request: object,
+      sender: chrome.runtime.MessageSender,
+      respond: (response: object) => void
+    ) {
+      render()
+      respond({ message: 'rendered' })
+    }
     render()
+    chrome.runtime.onMessage.addListener(renderAndSendReseponse)
+
+    return () => chrome.runtime.onMessage.removeListener(renderAndSendReseponse)
   }, [render])
 
   /**
