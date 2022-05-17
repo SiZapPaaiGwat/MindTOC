@@ -1,8 +1,18 @@
 import { SEMANTIC_HEADINGS, IGNORED_TAGS } from '../types/constants'
 import { type Heading } from '../types'
+import {
+  containExternalLinks,
+  isVisible,
+  isArticleNode
+} from '../utils/content'
 
 const ignoreHiddenHeadingTags = false
 const headingTagMinimum = 2
+// if heading contains external links, it's not a heading
+// TODO fix exception: wikipedia's heading contains external links to edit pages
+const ignoreExternalLinkHeadings = false
+// TODO parent node may be a giant
+const checkParentTextDensity = false
 
 function getTagNumber(tag: string): number {
   return parseInt(tag.toLowerCase().replace('h', ''))
@@ -28,14 +38,19 @@ export function extract(root: HTMLElement): Heading[] {
         }
 
         if (SEMANTIC_HEADINGS.includes(tag)) {
-          if (ignoreHiddenHeadingTags) {
-            const { width, height } = node.getBoundingClientRect()
-            return width > 0 && height > 0
-              ? NodeFilter.FILTER_ACCEPT
-              : NodeFilter.FILTER_REJECT
-          } else {
-            return NodeFilter.FILTER_ACCEPT
+          if (ignoreHiddenHeadingTags && !isVisible(node)) {
+            return NodeFilter.FILTER_REJECT
           }
+
+          if (ignoreExternalLinkHeadings && containExternalLinks(node)) {
+            return NodeFilter.FILTER_REJECT
+          }
+
+          if (checkParentTextDensity && !isArticleNode(node)) {
+            return NodeFilter.FILTER_REJECT
+          }
+
+          return NodeFilter.FILTER_ACCEPT
         }
 
         return NodeFilter.FILTER_SKIP
@@ -68,15 +83,20 @@ export function extract(root: HTMLElement): Heading[] {
       anchor
     }
     /**
-     * In this case, adjust level by prev level
-     * h2 > h5 + h5
+     * Compute current level from prev tag number
      */
     if (prevTagNum) {
-      if (tagNum === prevTagNum) {
-        node.indentLevel = headings[id - 1].indentLevel
-      } else if (tagNum - prevTagNum > 1) {
+      const gap = tagNum - prevTagNum
+      if (gap > 0) {
         node.indentLevel = headings[id - 1].indentLevel + 1
+      } else if (gap === 0) {
+        node.indentLevel = headings[id - 1].indentLevel
+      } else if (gap < 0) {
+        node.indentLevel = Math.max(headings[id - 1].indentLevel - 1, 1)
       }
+    } else {
+      // First heading starts from 1, no matter what tag number it is.
+      node.indentLevel = 1
     }
 
     headings.push(node)

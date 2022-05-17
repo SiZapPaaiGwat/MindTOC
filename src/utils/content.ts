@@ -10,8 +10,9 @@ import { textDensity, textLength, getTextRatioByTags } from '../lib/density'
 import { SEMANTIC_HEADINGS } from '../types/constants'
 
 /**
- * A content node contains a lot of text and its tag should be semantic
- *
+ * A semantic article node contains a lot of text and some links.
+ * If most of the text are from anchors and headings, it is not a part of an article.
+ * Well, we can use density to check this according to its text size.
  * @param {HTMLElement} root
  * @returns
  */
@@ -63,4 +64,21 @@ export function isTocNode(root: HTMLElement): boolean {
     }
   }
   return anchorTextSize / totalTextSize > TOC_NODE_TEXT_DENSITY_THRESHOLD
+}
+
+export function containExternalLinks(node: HTMLElement): boolean {
+  const links = node.querySelectorAll('a') || []
+  for (let index = 0; index < links.length; index++) {
+    const element = links[index]
+    if (!isInternalAnchor(element)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+export function isVisible(node: HTMLElement): boolean {
+  const { width, height } = node.getBoundingClientRect()
+  return width > 0 && height > 0
 }

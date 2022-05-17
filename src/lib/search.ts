@@ -8,7 +8,7 @@ import { isArticleNode } from '../utils/content'
 
 function getAncestors(el: HTMLElement): HTMLElement[] {
   let nextParent = el.parentElement
-  const body = el.ownerDocument.documentElement
+  const body = el.ownerDocument.body
   const ancestors: HTMLElement[] = []
 
   while (nextParent && nextParent !== body) {

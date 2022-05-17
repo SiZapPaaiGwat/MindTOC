@@ -6,7 +6,7 @@ import React, {
   useRef
 } from 'react'
 import { createRoot } from 'react-dom/client'
-import { useLocation } from 'react-use'
+import { useHash } from 'react-use'
 import Color from 'color'
 
 import { CONTAINER_ID, SEMANTIC_HEADINGS } from './types/constants'
@@ -26,17 +26,21 @@ if (!host) {
 const root = createRoot(host)
 root.render(<Widget />)
 
-/**
- * matchMedia('(prefers-color-scheme: dark)').matches does not work in content.js
- */
-const isDark = Color(getComputedStyle(document.body).backgroundColor).isDark()
-if (isDark) {
-  document.documentElement.classList.add('dark')
-}
+const observer = new MutationObserver((mutationList, instance) => {
+  for (let index = 0; index < mutationList.length; index++) {
+    const element = mutationList[index]
+    console.log(element)
+    if (element.type === 'childList') {
+      instance.disconnect()
+      root.render(<Widget />)
+      return
+    }
+  }
+})
 
 function Widget(): ReactElement {
-  // const [hash] = useHash()
-  const { pathname, hash } = useLocation()
+  const [hash] = useHash()
+  // const { pathname, hash } = useLocation()
   const selectedRef = useRef<HTMLDivElement | null>(null)
   const [state, dispatch] = useReducer(reducer, defaultState)
   const { headings, top, left, selectedIndex, visible } = state
@@ -55,6 +59,19 @@ function Widget(): ReactElement {
       const headings = extract(rootNode)
       console.log({ headings })
       if (headings.length) {
+        /**
+         * User may change theme at any time
+         * matchMedia('(prefers-color-scheme: dark)').matches does not work in content.js
+         */
+        const isDark = Color(
+          getComputedStyle(
+            document.querySelector('#' + headings[0].anchor) as HTMLElement
+          ).color
+        ).isDark()
+        if (!isDark) {
+          document.documentElement.classList.add('dark')
+        }
+        observer.observe(rootNode, { childList: true })
         dispatch({
           type: Actions.INIT,
           payload: {
@@ -77,7 +94,7 @@ function Widget(): ReactElement {
    */
   useEffect(() => {
     render()
-  }, [pathname, render])
+  }, [render])
 
   /**
    * When use interacts with original anchors, automatically scrolls to widget heading
