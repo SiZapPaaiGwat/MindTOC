@@ -1,6 +1,6 @@
 {
   "name": "MindTOC",
-  "description": "Editable page outliner with mind maps",
+  "description": "Web page outliner as a mind map",
   "version": "1.0",
   "manifest_version": 3,
   "action": {},
