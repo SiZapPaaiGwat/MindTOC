@@ -8,6 +8,8 @@ export const SEMANTIC_ARTICLE_SELECTORS = 'article,main,[role="main"]'.split(
   ','
 )
 
+export const SEMANTIC_TOC_SELECTORS = '#toc,.toc,[role="navigation"]'.split(',')
+
 // Reject these tags when extrating headings
 export const IGNORED_TAGS =
   'header,footer,nav,aside,ul,ol,table,menu,dl,menu,pre,code,script,svg,style,datalist,select,template,noscript,form,button,iframe'.split(
