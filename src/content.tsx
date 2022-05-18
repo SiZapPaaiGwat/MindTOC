@@ -37,6 +37,24 @@ function Widget(): ReactElement {
       payload: parseFloat(e.currentTarget?.dataset.id as string)
     })
   }, [])
+  const onDrag = useCallback((e: React.DragEvent<HTMLElement>) => {
+    dispatch({
+      type: Actions.HANDLE_DRAG,
+      payload: {
+        x: e.clientX,
+        y: e.clientY
+      }
+    })
+    // Hide component on drag
+    if (e.type === 'dragstart') {
+      setTimeout(() => {
+        dispatch({
+          type: Actions.CHANGE_STATUS,
+          payload: false
+        })
+      }, 0)
+    }
+  }, [])
   const render = useCallback(() => {
     const rootNode = searchContentRoot(document)
     const titleNode = document.querySelector(SEMANTIC_HEADINGS.join(','))
@@ -106,10 +124,22 @@ function Widget(): ReactElement {
     selectedRef.current?.scrollIntoView()
   }, [hash, headings])
 
+  useEffect(() => {
+    function preventDefault(e: Event) {
+      e.preventDefault()
+    }
+    // disable dragend animation
+    document.addEventListener('dragover', preventDefault)
+    return () => document.removeEventListener('dragover', preventDefault)
+  }, [])
+
   return (
     <div
       className={`content_wrapper ${visible ? '' : 'hidden'}`}
       style={{ top: top + 'px', left: left + 'px' }}
+      draggable="true"
+      onDragStart={onDrag}
+      onDragEnd={onDrag}
     >
       <div className="content_title">Table of Contents</div>
       <div className="content_list">
