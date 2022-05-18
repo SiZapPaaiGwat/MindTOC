@@ -18,6 +18,49 @@ function getTagNumber(tag: string): number {
   return parseInt(tag.toLowerCase().replace('h', ''))
 }
 
+function acceptNode(node: HTMLElement) {
+  const tag = node.tagName.toLowerCase()
+
+  if (IGNORED_TAGS.includes(tag)) {
+    return NodeFilter.FILTER_REJECT
+  }
+
+  if (SEMANTIC_HEADINGS.includes(tag)) {
+    if (ignoreHiddenHeadingTags && !isVisible(node)) {
+      return NodeFilter.FILTER_REJECT
+    }
+
+    if (ignoreExternalLinkHeadings && containExternalLinks(node)) {
+      return NodeFilter.FILTER_REJECT
+    }
+
+    if (checkParentTextDensity && !isArticleNode(node)) {
+      return NodeFilter.FILTER_REJECT
+    }
+
+    return NodeFilter.FILTER_ACCEPT
+  }
+
+  return NodeFilter.FILTER_SKIP
+}
+
+// export function parseHeadings(headings: NodeList) {
+//   const group = {}
+
+//   headings.forEach((heading, index) => {
+//     const { left } = (heading as Element).getBoundingClientRect()
+//     if (!group[left]) {
+//       group[left] = []
+//     }
+//     group[left].push(index)
+//   })
+
+//   const target: number[] = Object.values(group).sort(
+//     (a, b) => b.length - a.length
+//   )[0]
+//   return target.map((index) => headings[index] as Element)
+// }
+
 /**
  * Extract heading details from an article node
  * @param root Root element to extract heading tags
@@ -30,31 +73,7 @@ export function extract(root: HTMLElement): Heading[] {
     root as Node,
     NodeFilter.SHOW_ELEMENT,
     {
-      acceptNode: function (node: HTMLElement) {
-        const tag = node.tagName.toLowerCase()
-
-        if (IGNORED_TAGS.includes(tag)) {
-          return NodeFilter.FILTER_REJECT
-        }
-
-        if (SEMANTIC_HEADINGS.includes(tag)) {
-          if (ignoreHiddenHeadingTags && !isVisible(node)) {
-            return NodeFilter.FILTER_REJECT
-          }
-
-          if (ignoreExternalLinkHeadings && containExternalLinks(node)) {
-            return NodeFilter.FILTER_REJECT
-          }
-
-          if (checkParentTextDensity && !isArticleNode(node)) {
-            return NodeFilter.FILTER_REJECT
-          }
-
-          return NodeFilter.FILTER_ACCEPT
-        }
-
-        return NodeFilter.FILTER_SKIP
-      }
+      acceptNode
     }
   )
 
